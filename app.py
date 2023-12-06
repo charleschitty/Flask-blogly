@@ -4,8 +4,7 @@ import os
 
 from flask import Flask, request, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db
-from models import User
+from models import User, connect_db, db
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -23,18 +22,30 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 @app.get("/")
 def index():
     """
-    Creates homepage HTML.
+    redirects to list of users
+    """
+    return redirect('/users')
+
+@app.get("/users")
+def get_users():
+    """
+    Show all users.
+    Make these links to view the detail page for the user.
+    Have a link here to the add-user form.
     """
 
-    return render_template("homepage.html")
-    """It should be able to import the User model, and create the
-    tables using SQLAlchemy. Make sure you have the FlaskDebugToolbar
-    installed — it’s especially helpful when using SQLAlchemy."""
+    return render_template("/user_listing.html")
 
-@app.post("/")
+@app.get("/users/new")
 def add_user():
     """
-    Add user and redirect to list of users
+    Show an add form for users
+    """
+
+@app.post("/users/new")
+def add_user():
+    """
+    Process the add form, adding a new user and going back to /users
     """
 
     first_name = request.form['first_name']
@@ -47,4 +58,31 @@ def add_user():
     db.session.commit()
 
     return redirect(f"/{user.id}")
+
+@app.get("/users/<user-id>")
+def show_user_info():
+    """
+    Show information about the given user.
+
+    Have a button to get to their edit page, and to delete the user.
+    """
+@app.get("/users/<user-id>/edit")
+def edit_user_info():
+    """
+    Show the edit page for a user.
+
+    Have a cancel button that returns to the detail page for a user,
+    and a save button that updates the user.
+    """
+
+@app.post("/users/<user-id>/edit")
+def handle_edit_user_info_submit():
+    """
+    Process the edit form, returning the user to the /users page.
+    """
+@app.post("/users/<user-id>/delete")
+def handle_edit_user_info_submit():
+    """
+    Delete the user
+    """
 
