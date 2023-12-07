@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from models import User, connect_db, db, Post
-from datetime import date
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -140,26 +140,30 @@ def handle_add_post(user_id):
     title = request.form['title']
     content = request.form['content']
 
-    post = Post(title=title,
+    new_post = Post(title=title,
                 content=content,
-                created_at=date.today(),
-                user_id=user.user_id)
+                created_at=datetime.now(),
+                user_id=user.id)
 
-    db.session.add(post)
+    db.session.add(new_post)
     db.session.commit()
 
     #flash new user created (visual confirmation)
 
-    return redirect(f"/users/{user.user_id}")
+    return redirect(f"/users/{user.id}")
 
 @app.get('/posts/<int:post_id>')
 def show_post(post_id):
     """ Show a post.
         Show buttons to edit and delete the post.
     """
-    users = User.query.all() #ordering (further study) #by user-id probably
 
-    return render_template("/user_listing.html", users=users)
+    #not sure how the join with post/user is referenced here
+    post = Post.query.get_or_404(post_id)
+    user_id = post.user_id
+    user = User.query.get_or_404(user_id)
+
+    return render_template("/show_post.html", post=post, user=user)
 
 @app.get('/posts/<int:post_id>/edit')
 def show_edit_post(post_id):

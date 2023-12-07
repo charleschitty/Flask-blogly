@@ -6,7 +6,7 @@
 
 <h1>Add Post for {{ user.first_name }} {{ user.last_name }}</h1>
 
-<form method="POST" action="/users/{{ user.user_id }}/posts/new">
+<form method="POST" action="/users/{{ user.id }}/posts/new">
   <p>Title:
     <input name="title" placeholder="Enter a title" required>
   </p>
