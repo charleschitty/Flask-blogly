@@ -27,7 +27,7 @@ class User(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
-        autoincrementing=True
+        autoincrement=True
     )
 
     first_name =  db.Column(

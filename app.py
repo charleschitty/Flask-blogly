@@ -33,17 +33,24 @@ def get_users():
     Make these links to view the detail page for the user.
     Have a link here to the add-user form.
     """
+    #TODO: need to think about clearing db for testing somehow?
 
-    return render_template("/user_listing.html")
+    #we need to query database and pull it back to get our users list
+    #the users list will then be passed to user_listing.html
+
+    users = User.query.all()
+
+    return render_template("/user_listing.html",users=users)
 
 @app.get("/users/new")
 def add_user():
     """
     Show an add form for users
     """
+    return render_template('/add_user_form.html')
 
 @app.post("/users/new")
-def add_user():
+def handle_add_user_form():
     """
     Process the add form, adding a new user and going back to /users
     """
@@ -54,21 +61,23 @@ def add_user():
     image_url = image_url if image_url else None
 
     user = User(first_name=first_name, last_name=last_name, image_url=image_url)
-    db.session.add(User)
+    db.session.add(user)
     db.session.commit()
 
     return redirect("/users")
 
-@app.get("/users/<user-id>")
-def show_user_info():
+@app.get("/users/<int:user_id>")
+def show_user_info(user_id):
     """
     Show information about the given user.
 
     Have a button to get to their edit page, and to delete the user.
     """
 
-@app.get("/users/<user-id>/edit")
-def edit_user_info():
+    user = User.query.get_or_404(user_id)
+
+@app.get("/users/<user_id>/edit")
+def edit_user_info(user_id):
     """
     Show the edit page for a user.
 
@@ -76,14 +85,14 @@ def edit_user_info():
     and a save button that updates the user.
     """
 
-@app.post("/users/<user-id>/edit")
-def handle_edit_user_info_submit():
+@app.post("/users/<user_id>/edit")
+def handle_edit_user_info_form(user_id):
     """
     Process the edit form, returning the user to the /users page.
     """
 
-@app.post("/users/<user-id>/delete")
-def handle_edit_user_info_submit():
+@app.post("/users/<user_id>/delete")
+def handle_edit_user_delete_form(user_id):
     """
     Delete the user
     """
