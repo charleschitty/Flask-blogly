@@ -66,10 +66,12 @@ class UserViewTestCase(TestCase):
         with app.test_client() as c:
 
             data = {
-            "first_name": "Joel",
-            "last_name": "Burton",
-            "image_url": None
+                "first_name": "Joel",
+                "last_name": "Burton",
+                "image_url": None
             }
+
+            # test full user and no image user
 
             resp = c.post("/users/new", data=data, follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
@@ -81,22 +83,22 @@ class UserViewTestCase(TestCase):
 
     def test_load_user_detail_page(self):
         """
-        Tests that the user detail page loads correclty
+        Tests that the user detail page loads correctly
         """
 
         with app.test_client() as c:
 
-            test_user = User.query.get(self.user_id)
+            # test_user = User.query.get(self.user_id)
 
             resp = c.get(f"/users/{self.user_id}")
             html = resp.get_data(as_text=True)
-            self.assertIn(test_user.first_name, html)
+            # self.assertIn(test_user.first_name, html)
             self.assertIn("test1_first",html)
-            self.assertIn(test_user.last_name, html)
+            # self.assertIn(test_user.last_name, html)
             self.assertIn("test1_last",html)
             self.assertIn("User: test1_first test1_last", html)
-            self.assertIn(f"User: {test_user.first_name} {test_user.last_name}",
-                           html)
+            # self.assertIn(f"User: {test_user.first_name} {test_user.last_name}",
+            #  html)
 
     def test_edit_users(self):
         """Tests if form edited user found on user list homepage"""
@@ -106,6 +108,7 @@ class UserViewTestCase(TestCase):
             test_user = User.query.get(self.user_id)
             test_user.last_name = "test_Burton"
 
+            #test a bunch of edits
             data = {
                 "first_name" : test_user.first_name,
                 "last_name" : test_user.last_name,
@@ -118,9 +121,9 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
-            self.assertIn(test_user.first_name, html)
+            # self.assertIn(test_user.first_name, html)
             self.assertIn("test_Burton",html)
-            self.assertIn(test_user.last_name, html)
+            # self.assertIn(test_user.last_name, html)
             self.assertIn("Users List", html)
 
 
@@ -129,7 +132,7 @@ class UserViewTestCase(TestCase):
 
         with app.test_client() as c:
 
-            test_user = User.query.get(self.user_id)
+            # test_user = User.query.get(self.user_id)
 
             resp = c.post(f"/users/{self.user_id}/delete",
                            follow_redirects=True)
@@ -137,7 +140,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertNotIn("test1_first", html)
-            self.assertNotIn(test_user.first_name, html)
+            # self.assertNotIn(test_user.first_name, html)
             self.assertNotIn("test1_last",html)
-            self.assertNotIn(test_user.last_name, html)
+            # self.assertNotIn(test_user.last_name, html)
             self.assertIn("Users List", html)

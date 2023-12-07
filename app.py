@@ -34,9 +34,9 @@ def index():
 def get_users():
     """Show all users with links to user-details and a link to add-user form."""
 
-    users = User.query.all()
+    users = User.query.all() #ordering (further study) #by user-id probably
 
-    return render_template("/user_listing.html",users=users)
+    return render_template("/user_listing.html", users=users)
 
 @app.get("/users/new")
 def add_user():
@@ -50,12 +50,16 @@ def handle_add_user_form():
 
     first_name = request.form['first_name']
     last_name = request.form['last_name']
+    # image_url = request.form['image_url'] or None
     image_url = request.form.get('image_url', None)
-    image_url = image_url if image_url else None
+    # image_url = image_url if image_url else None
 
     user = User(first_name=first_name, last_name=last_name, image_url=image_url)
+
     db.session.add(user)
     db.session.commit()
+
+    #flash new user created (visual confirmation)
 
     return redirect("/users")
 
@@ -70,7 +74,7 @@ def show_user_info(user_id):
 
     return render_template("/user_detail.html", user=user)
 
-@app.get("/users/<user_id>/edit")
+@app.get("/users/<int:user_id>/edit")
 def edit_user_info(user_id):
     """
     Show the edit page for a user. Provides cancel button that returns to the
@@ -81,7 +85,7 @@ def edit_user_info(user_id):
     return render_template("/user_edit.html", user=user)
 
 
-@app.post("/users/<user_id>/edit")
+@app.post("/users/<int:user_id>/edit")
 def handle_edit_user_info_form(user_id):
     """
     Process the edit form, returning the user to the /users page.
@@ -90,14 +94,16 @@ def handle_edit_user_info_form(user_id):
     user = User.query.get_or_404(user_id) #grabbing user object
     # what if database fails to return a user!?
     # probably better to handle exception but for now:
-    if user:
-        user.first_name = request.form['first_name']
-        user.last_name = request.form['last_name']
-        image_url = request.form.get('image_url', None)
-        user.image_url = image_url if image_url else None
-
+    user.first_name = request.form['first_name']
+    user.last_name = request.form['last_name']
+    # user.image_url = request.form.get('image_url', None)
+    user.image_url = request.form['image_url']
+    # user.image_url = image_url if image_url else None
+    # editing doesn't require "None"
     db.session.add(user)
     db.session.commit()
+
+    #Flashing - user was edited
 
     return redirect("/users")
 
@@ -109,5 +115,7 @@ def handle_edit_user_delete_form(user_id):
 
     db.session.delete(user)
     db.session.commit()
+
+    #flash user was deleted
 
     return redirect("/users")

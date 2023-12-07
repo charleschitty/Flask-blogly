@@ -13,15 +13,15 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+#where did inputs come from - ex: provided by user -required data
 class User(db.Model):
-    """User.
+    """User
 
     Fields:
-    -dept_code: xxx
-    -dept_name: yyy
-
-    Relationship:
-    -employees : returns lsit of [EmployeeInstnace, ...]
+    - id (serial)
+    - first_name
+    - last_name
+    - image_url
     """
 
     __tablename__ = "users"
