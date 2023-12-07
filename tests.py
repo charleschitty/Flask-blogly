@@ -38,7 +38,7 @@ class UserViewTestCase(TestCase):
             last_name="test1_last",
             image_url=None,
         )
-
+        db.session.add(test_user)
 
 
         test_post = Post(
@@ -48,7 +48,7 @@ class UserViewTestCase(TestCase):
             created_at='2023-12-07 07:49:02.747421'
         )
 
-        db.session.add(test_user)
+
         db.session.add(test_post)
         db.session.commit()
 
@@ -58,6 +58,8 @@ class UserViewTestCase(TestCase):
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
         self.post_id = test_post.id
+
+        breakpoint()
 
     def tearDown(self):
         """Clean up any fouled transaction."""
