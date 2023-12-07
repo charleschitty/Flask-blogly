@@ -8,13 +8,19 @@
 
 <form method="POST", action="/users/{{ user.id }}/edit">
   <p>First Name:
-    <input value="{{ user.first_name }}" name="first_name">
+    <input value="{{ user.first_name }}" name="first_name" required>
   </p>
   <p>Last Name:
-    <input value="{{ user.last_name }}" name="last_name">
+    <input value="{{ user.last_name }}" name="last_name" required>
   </p>
+  <!-- how do rite? -->
   <p>Image URL:
-    <input value="{{ user.image_url }}" name="image_url">
+    {% if user.image_url %}
+      <input value="{{ user.image_url }}" name="image_url">
+      {% else %}
+        <input name="image_url">
+    {% endif %}
+
   </p>
 
   <button>

@@ -10,7 +10,7 @@
 </h1>
 
 {% if user.image_url %}
-  {{user.image_url}}
+   <img src="{{ user.image_url }}" alt="dummy">
 {% endif %}
 
 <button> <a href="/users/{{ user.id }}/edit"> Edit</a></button>

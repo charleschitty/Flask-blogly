@@ -41,7 +41,7 @@ class User(db.Model):
     )
 
     image_url = db.Column(
-        db.String(50),
+        db.Text
     )
 
     def __repr__(self):

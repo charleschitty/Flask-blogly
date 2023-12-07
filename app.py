@@ -19,6 +19,10 @@ debug = DebugToolbarExtension(app)
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 
+#FIXME: ???? We have non nullable fields but we are still submitting blank
+# form fields and its showing up as a blank (empty string?) in the DB
+# it's not unknown but still empty....?
+
 @app.get("/")
 def index():
     """
@@ -98,14 +102,14 @@ def handle_edit_user_info_form(user_id):
     """
 
     user = User.query.get_or_404(user_id) #grabbing user object
+    # what if database fails to return a user!?
+    # probably better to handle exception but for now:
+    if user:
+        user.first_name = request.form['first_name']
+        user.last_name = request.form['last_name']
+        image_url = request.form['image_url'] #is there a command for like.get(x,None)
+        user.image_url = image_url if image_url else None
 
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    image_url = request.form['image_url'] #is there a command for like.get(x,None)
-    image_url = image_url if image_url else None
-
-
-    user = User(first_name=first_name, last_name=last_name, image_url=image_url)
     #serial user id 2
     #edit user to update the fields for 1st,last,url
 
