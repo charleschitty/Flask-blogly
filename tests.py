@@ -30,8 +30,8 @@ class UserViewTestCase(TestCase):
         # As you add more models later in the exercise, you'll want to delete
         # all of their records before each test just as we're doing with the
         # User model below.
-        User.query.delete()
         Post.query.delete()
+        User.query.delete()
 
         test_user = User(
             first_name="test1_first",
@@ -39,6 +39,7 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
         db.session.add(test_user)
+        db.session.commit()
 
 
         test_post = Post(
@@ -59,7 +60,7 @@ class UserViewTestCase(TestCase):
         self.user_id = test_user.id
         self.post_id = test_post.id
 
-        breakpoint()
+       # breakpoint()
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -162,7 +163,7 @@ class UserViewTestCase(TestCase):
 
     """ TESTS FOR POSTS"""
 
-    def test_list_post(self):
+    def test_list_post(self):#FIXME: what
         """Tests posts show up on user detail page"""
         with app.test_client() as c:
             resp = c.get(f"/users/{self.user_id}")
