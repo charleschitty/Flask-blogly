@@ -3,16 +3,17 @@
 {% block title %} User Detail {% endblock %}
 
 
+{% block content %}
+
 <h1>
   {{ user.first_name }} {{ user.last_name }}
 </h1>
 
-{{user.image_url}}
+{% if user.image_url %}
+  {{user.image_url}}
+{% endif %}
 
-<button> <a href="/users/{{user.user_id}}/edit"> Edit</a></button>
-<button> <a href="/users/{{user.user_id}}/delete"> Delete</a></button>
-
-
-{% block content %}
+<button> <a href="/users/{{ user.id }}/edit"> Edit</a></button>
+<button> <a href="/users/{{ user.id }}/delete"> Delete</a></button>
 
 {% endblock %}

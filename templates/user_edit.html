@@ -6,21 +6,23 @@
 
 <h1>Edit a user</h1>
 
-<!-- THESE ARE PLACEHOLDERS -->
-
-<form method="POST">
+<form method="POST", action="/users/{{ user.id }}/edit">
   <p>First Name:
-    <input default="{{user.first_name}}" name="first_name">
+    <input value="{{ user.first_name }}" name="first_name">
   </p>
   <p>Last Name:
-    <input default="{{user.last_name}}" name="last_name">
+    <input value="{{ user.last_name }}" name="last_name">
   </p>
   <p>Image URL:
-    <input default="{{user.image_url}}" name="image_url">
+    <input value="{{ user.image_url }}" name="image_url">
   </p>
 
-  <button><a href="/users/{{user.user_id}}">Cancel</a></button>
-  <button><input type=submit> Save </input> </button>
+  <button>
+    <a href="/users/{{ user.id }}">
+      Cancel
+    </a>
+  </button>
+  <input type="submit" value="Save">
 </form>
 
 {% endblock %}

@@ -76,6 +76,8 @@ def show_user_info(user_id):
 
     user = User.query.get_or_404(user_id)
 
+    return render_template("/user_detail.html", user=user)
+
 @app.get("/users/<user_id>/edit")
 def edit_user_info(user_id):
     """
@@ -85,11 +87,32 @@ def edit_user_info(user_id):
     and a save button that updates the user.
     """
 
+    user = User.query.get_or_404(user_id)
+    return render_template("/user_edit.html", user=user)
+
+
 @app.post("/users/<user_id>/edit")
 def handle_edit_user_info_form(user_id):
     """
     Process the edit form, returning the user to the /users page.
     """
+
+    user = User.query.get_or_404(user_id) #grabbing user object
+
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    image_url = request.form['image_url'] #is there a command for like.get(x,None)
+    image_url = image_url if image_url else None
+
+
+    user = User(first_name=first_name, last_name=last_name, image_url=image_url)
+    #serial user id 2
+    #edit user to update the fields for 1st,last,url
+
+    db.session.add(user)
+    db.session.commit()
+
+    return redirect("/users")
 
 @app.post("/users/<user_id>/delete")
 def handle_edit_user_delete_form(user_id):
