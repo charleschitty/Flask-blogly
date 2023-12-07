@@ -80,9 +80,10 @@ class Post(db.Model):
     )
     user_id = db.Column(
         db.Integer,
-        #TODO:db.ForeignKey('posts.id'), needed or redundant with below?
-        user = db.relationship('User', backref='posts')
+        db.ForeignKey('users.id')
     )
+
+    user = db.relationship('User', backref='posts')
 
 
 

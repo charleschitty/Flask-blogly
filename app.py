@@ -4,7 +4,8 @@ import os
 
 from flask import Flask, request, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from models import User, connect_db, db
+from models import User, connect_db, db, Post
+from datetime import date
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -126,35 +127,77 @@ def handle_edit_user_delete_form(user_id):
 def add_post(user_id):
     """Show form to add a post for that user
     """
-    ...
+    user = User.query.get_or_404(user_id)
+
+    return render_template("add_post_form.html", user=user)
 
 @app.post('/users/<int:user_id>/posts/new')
 def handle_add_post(user_id):
     """Handle the add post form and redirect to the user detail page
     """
-    ...
 
+    user = User.query.get_or_404(user_id)
+    title = request.form['title']
+    content = request.form['content']
+
+    post = Post(title=title,
+                content=content,
+                created_at=date.today(),
+                user_id=user.user_id)
+
+    db.session.add(post)
+    db.session.commit()
+
+    #flash new user created (visual confirmation)
+
+    return redirect(f"/users/{user.user_id}")
 
 @app.get('/posts/<int:post_id>')
 def show_post(post_id):
     """ Show a post.
         Show buttons to edit and delete the post.
     """
-    ...
+    users = User.query.all() #ordering (further study) #by user-id probably
 
+    return render_template("/user_listing.html", users=users)
 
 @app.get('/posts/<int:post_id>/edit')
 def show_edit_post(post_id):
     """Show form to edit a post, and to cancel (back to user page)."""
-    ...
+
+    user = User.query.get_or_404(post_id)
+    return render_template("/user_edit.html", user=user)
 
 @app.post('/posts/<int:post_id>/edit')
 def handle_edit_post(post_id):
     """Handle editing of a post. Redirect back to the post view."""
-    ...
+
+    user = User.query.get_or_404(user_id) #grabbing user object
+
+    user.first_name = request.form['first_name']
+    user.last_name = request.form['last_name']
+
+    user.image_url = request.form['image_url']
+
+    db.session.add(user)
+    db.session.commit()
+
+    #Flashing - user was edited
+
+    return redirect("/users")
+
+
 @app.get('/posts/<int:post_id>/delete')
 def delete_post(post_id):
     """Delete the post."""
-    ...
+
+    post = User.query.get_or_404(post_id)
+
+    db.session.delete(post)
+    db.session.commit()
+
+    #flash user was deleted
+
+    return redirect("/users")
 
 
