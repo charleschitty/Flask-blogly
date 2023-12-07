@@ -119,3 +119,42 @@ def handle_edit_user_delete_form(user_id):
     #flash user was deleted
 
     return redirect("/users")
+
+"""Post routes: Users can add and edit posts on the blog"""
+
+@app.get('/users/<int:user_id>/posts/new')
+def add_post(user_id):
+    """Show form to add a post for that user
+    """
+    ...
+
+@app.post('/users/<int:user_id>/posts/new')
+def handle_add_post(user_id):
+    """Handle the add post form and redirect to the user detail page
+    """
+    ...
+
+
+@app.get('/posts/<int:post_id>')
+def show_post(post_id):
+    """ Show a post.
+        Show buttons to edit and delete the post.
+    """
+    ...
+
+
+@app.get('/posts/<int:post_id>/edit')
+def show_edit_post(post_id):
+    """Show form to edit a post, and to cancel (back to user page)."""
+    ...
+
+@app.post('/posts/<int:post_id>/edit')
+def handle_edit_post(post_id):
+    """Handle editing of a post. Redirect back to the post view."""
+    ...
+@app.get('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+    """Delete the post."""
+    ...
+
+

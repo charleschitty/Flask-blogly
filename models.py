@@ -49,3 +49,42 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.first_name} {self.last_name} id={self.id}>"
+
+
+class Post(db.Model):
+    """Fields:
+        id int PK
+        title str
+        content str
+        created_at date with time zone and time stamp
+        user_id FK users
+
+    """
+    __tablename__ = 'posts'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+
+    title = db.Column(
+        db.String(100),
+        nullable=False)
+
+    content = db.Column(
+        db.Text,
+        nullable = False)
+
+    created_at = db.Column(
+        db.DateTime
+    )
+    user_id = db.Column(
+        db.Integer,
+        #TODO:db.ForeignKey('posts.id'), needed or redundant with below?
+        user = db.relationship('User', backref='posts')
+    )
+
+
+
+
+
