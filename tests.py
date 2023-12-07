@@ -52,9 +52,36 @@ class UserViewTestCase(TestCase):
         db.session.rollback()
 
     def test_list_users(self):
+        """Tests if manually added user found on user list homepage"""
         with app.test_client() as c:
             resp = c.get("/users")
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
+
+    def test_add_users(self):
+
+        data = {
+            "first_name": "Joel",
+            "last_name": "Burton"
+        }
+
+        with app.test_client() as c:
+            resp = c.post("/users/new", data)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("Joel", html)
+            self.assertIn("Burton",html)
+
+
+
+
+
+    # def test_cancel_edit(self):
+
+
+    # def test_edit_users(self):
+
+
+    # def test_delete_users(self):

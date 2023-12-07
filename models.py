@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+DEFAULT_IMAGE_URL = "https://tinyurl.com/tv-missing"
+
 def connect_db(app):
     """Connect to database."""
 
@@ -41,7 +43,8 @@ class User(db.Model):
     )
 
     image_url = db.Column(
-        db.Text
+        db.Text,
+        default = DEFAULT_IMAGE_URL
     )
 
     def __repr__(self):

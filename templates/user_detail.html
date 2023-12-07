@@ -14,6 +14,9 @@
 {% endif %}
 
 <button> <a href="/users/{{ user.id }}/edit"> Edit</a></button>
-<button> <a href="/users/{{ user.id }}/delete"> Delete</a></button>
+
+<form method="POST", action ="/users/{{ user.id }}/delete">
+  <button> Delete </button>
+</form>
 
 {% endblock %}

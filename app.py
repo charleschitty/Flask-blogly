@@ -22,20 +22,19 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 #FIXME: ???? We have non nullable fields but we are still submitting blank
 # form fields and its showing up as a blank (empty string?) in the DB
 # it's not unknown but still empty....?
+# DO required ? yes no
 
 @app.get("/")
 def index():
     """
-    redirects to list of users
+    Redirects to list of users (homepage).
     """
     return redirect('/users')
 
 @app.get("/users")
 def get_users():
     """
-    Show all users.
-    Make these links to view the detail page for the user.
-    Have a link here to the add-user form.
+    Show all users with links to user-details and a link to add-user form.
     """
     #TODO: need to think about clearing db for testing somehow?
 
@@ -49,14 +48,14 @@ def get_users():
 @app.get("/users/new")
 def add_user():
     """
-    Show an add form for users
+    Show an add form for users.
     """
     return render_template('/add_user_form.html')
 
 @app.post("/users/new")
 def handle_add_user_form():
     """
-    Process the add form, adding a new user and going back to /users
+    Process the add form, adding a new user and redirecting back to /users
     """
 
     first_name = request.form['first_name']
@@ -85,10 +84,8 @@ def show_user_info(user_id):
 @app.get("/users/<user_id>/edit")
 def edit_user_info(user_id):
     """
-    Show the edit page for a user.
-
-    Have a cancel button that returns to the detail page for a user,
-    and a save button that updates the user.
+    Show the edit page for a user. Provides cancel button that returns to the
+    detail page for a user, and a save button that updates the user.
     """
 
     user = User.query.get_or_404(user_id)
@@ -121,5 +118,12 @@ def handle_edit_user_info_form(user_id):
 @app.post("/users/<user_id>/delete")
 def handle_edit_user_delete_form(user_id):
     """
-    Delete the user
+    Delete the user,, returning the user to the /users page.
     """
+
+    user = User.query.get_or_404(user_id)
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect("/users")
