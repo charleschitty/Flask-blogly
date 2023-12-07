@@ -2,9 +2,16 @@
 
 {% title %} User Detail {% endblock %}
 
+
 <h1>
-  {{ first_name }} {{ last_name }}
+  {{ user.first_name }} {{ user.last_name }}
 </h1>
+
+{{user.image_url}}
+
+<button> <a href="/users/{{user.user_id}}/edit"> Edit</a></button>
+<button> <a href="/users/{{user.user_id}}/delete"> Delete</a></button>
+
 
 {% block content %}
 

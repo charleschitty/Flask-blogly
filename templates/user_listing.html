@@ -1,7 +1,20 @@
 {% extends 'base.html' %}
 
-{% title %} Create a user {% endblock %}
+{% title %} Users {% endblock %}
 
 {% block content %}
+
+<div>
+<ul>
+  {% for user in users %}
+    <ol>
+      <a href="/users/{{user.id}}"> ref={{user.first_name}} {{user.last_name}}
+      </a>
+    </ol>
+  {% endfor %}
+</ul>
+</div>
+
+<button><a href="/users/new"> Add user</a></button>
 
 {% endblock %}

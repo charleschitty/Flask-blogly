@@ -8,10 +8,18 @@
 <!-- THESE ARE PLACEHOLDERS -->
 
 <form method="POST">
-  <p>First Name:     <input default="first_name" name="first_name"></p>
-  <p>Last Name:  <input default="first_name" name="last_name"></p>
-  <p>Image URL:   <input default="first_name" name="image_url"></p>
-  <button>bang!</button>
+  <p>First Name:
+    <input default="{{user.first_name}}" name="first_name">
+  </p>
+  <p>Last Name:
+    <input default="{{user.last_name}}" name="last_name">
+  </p>
+  <p>Image URL:
+    <input default="{{user.image_url}}" name="image_url">
+  </p>
+
+  <button><a href="/users/{{user.user_id}}">Cancel</a></button>
+  <button><input type=submit> Save </input> </button>
 </form>
 
 {% endblock %}

@@ -57,7 +57,7 @@ def add_user():
     db.session.add(User)
     db.session.commit()
 
-    return redirect(f"/{user.id}")
+    return redirect("/users")
 
 @app.get("/users/<user-id>")
 def show_user_info():
@@ -66,6 +66,7 @@ def show_user_info():
 
     Have a button to get to their edit page, and to delete the user.
     """
+
 @app.get("/users/<user-id>/edit")
 def edit_user_info():
     """
@@ -80,9 +81,9 @@ def handle_edit_user_info_submit():
     """
     Process the edit form, returning the user to the /users page.
     """
+
 @app.post("/users/<user-id>/delete")
 def handle_edit_user_info_submit():
     """
     Delete the user
     """
-
