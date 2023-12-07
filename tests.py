@@ -81,8 +81,29 @@ class UserViewTestCase(TestCase):
     # def test_cancel_edit(self):
 
 
-
     # def test_edit_users(self):
+
+    def test_edit_users(self):
+
+        with app.test_client() as c:
+
+            test_user = User.query.get(self.user_id)
+            test_user.last_name = "test_Burton"
+
+            data = {
+                "first_name" : test_user.first_name,
+                "last_name" : test_user.last_name,
+                "image_url" : test_user.image_url,
+            }
+
+            resp = c.post(f"/users/{self.user_id}/edit",
+                          data=data, follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("test1_first", html)
+            self.assertIn("test_Burton",html)
+            self.assertIn("Users List", html)
 
 
     # def test_delete_users(self):

@@ -60,7 +60,7 @@ def handle_add_user_form():
 
     first_name = request.form['first_name']
     last_name = request.form['last_name']
-    image_url = request.form.get('image_url', None) #is there a command for like.get(x,None)
+    image_url = request.form.get('image_url', None)
     image_url = image_url if image_url else None
 
     user = User(first_name=first_name, last_name=last_name, image_url=image_url)
