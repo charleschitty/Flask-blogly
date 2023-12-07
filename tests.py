@@ -61,6 +61,7 @@ class UserViewTestCase(TestCase):
             self.assertIn("test1_last", html)
 
     def test_add_users(self):
+        """Tests if form added user found on user list homepage"""
 
         with app.test_client() as c:
 
@@ -78,12 +79,27 @@ class UserViewTestCase(TestCase):
             self.assertIn("Users List", html)
 
 
-    # def test_cancel_edit(self):
+    def test_load_user_detail_page(self):
+        """
+        Tests that the user detail page loads correclty
+        """
 
+        with app.test_client() as c:
 
-    # def test_edit_users(self):
+            test_user = User.query.get(self.user_id)
+
+            resp = c.get(f"/users/{self.user_id}")
+            html = resp.get_data(as_text=True)
+            self.assertIn(test_user.first_name, html)
+            self.assertIn("test1_first",html)
+            self.assertIn(test_user.last_name, html)
+            self.assertIn("test1_last",html)
+            self.assertIn("User: test1_first test1_last", html)
+            self.assertIn(f"User: {test_user.first_name} {test_user.last_name}",
+                           html)
 
     def test_edit_users(self):
+        """Tests if form edited user found on user list homepage"""
 
         with app.test_client() as c:
 
@@ -102,8 +118,26 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
+            self.assertIn(test_user.first_name, html)
             self.assertIn("test_Burton",html)
+            self.assertIn(test_user.last_name, html)
             self.assertIn("Users List", html)
 
 
-    # def test_delete_users(self):
+    def test_delete_users(self):
+        """Tests if deleted user removed from user homepage"""
+
+        with app.test_client() as c:
+
+            test_user = User.query.get(self.user_id)
+
+            resp = c.post(f"/users/{self.user_id}/delete",
+                           follow_redirects=True)
+
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertNotIn("test1_first", html)
+            self.assertNotIn(test_user.first_name, html)
+            self.assertNotIn("test1_last",html)
+            self.assertNotIn(test_user.last_name, html)
+            self.assertIn("Users List", html)

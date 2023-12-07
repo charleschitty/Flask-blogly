@@ -26,20 +26,13 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 @app.get("/")
 def index():
-    """
-    Redirects to list of users (homepage).
-    """
+    """Redirects to list of users (homepage)."""
+
     return redirect('/users')
 
 @app.get("/users")
 def get_users():
-    """
-    Show all users with links to user-details and a link to add-user form.
-    """
-    #TODO: need to think about clearing db for testing somehow?
-
-    #we need to query database and pull it back to get our users list
-    #the users list will then be passed to user_listing.html
+    """Show all users with links to user-details and a link to add-user form."""
 
     users = User.query.all()
 
@@ -47,16 +40,13 @@ def get_users():
 
 @app.get("/users/new")
 def add_user():
-    """
-    Show an add form for users.
-    """
+    """Show an add form for users."""
+
     return render_template('/add_user_form.html')
 
 @app.post("/users/new")
 def handle_add_user_form():
-    """
-    Process the add form, adding a new user and redirecting back to /users
-    """
+    """Process the add form, adding a new user and redirecting back to /users"""
 
     first_name = request.form['first_name']
     last_name = request.form['last_name']
@@ -73,7 +63,6 @@ def handle_add_user_form():
 def show_user_info(user_id):
     """
     Show information about the given user.
-
     Have a button to get to their edit page, and to delete the user.
     """
 
@@ -104,11 +93,8 @@ def handle_edit_user_info_form(user_id):
     if user:
         user.first_name = request.form['first_name']
         user.last_name = request.form['last_name']
-        image_url = request.form.get('image_url', None) #is there a command for like.get(x,None)
+        image_url = request.form.get('image_url', None)
         user.image_url = image_url if image_url else None
-
-    #serial user id 2
-    #edit user to update the fields for 1st,last,url
 
     db.session.add(user)
     db.session.commit()
@@ -117,9 +103,7 @@ def handle_edit_user_info_form(user_id):
 
 @app.post("/users/<user_id>/delete")
 def handle_edit_user_delete_form(user_id):
-    """
-    Delete the user,, returning the user to the /users page.
-    """
+    """Delete the user,, returning the user to the /users page."""
 
     user = User.query.get_or_404(user_id)
 
