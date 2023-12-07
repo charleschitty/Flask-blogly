@@ -68,9 +68,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.users (id, first_name, last_name, image_url) FROM stdin;
-1	Max	Verstappen	https://tinyurl.com/tv-missing
-2	LeBronot	Jamess	https://tinyurl.com/tv-missing
-3	Chief	Keef	https://tinyurl.com/tv-missing
 \.
 
 
@@ -78,7 +75,7 @@ COPY public.users (id, first_name, last_name, image_url) FROM stdin;
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 3, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --

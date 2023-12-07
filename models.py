@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-DEFAULT_IMAGE_URL = "https://tinyurl.com/tv-missing"
+DEFAULT_IMAGE_URL = "https://tinyurl.com/default-url-image"
 
 def connect_db(app):
     """Connect to database."""

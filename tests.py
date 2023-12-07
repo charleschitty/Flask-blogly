@@ -62,23 +62,24 @@ class UserViewTestCase(TestCase):
 
     def test_add_users(self):
 
-        data = {
-            "first_name": "Joel",
-            "last_name": "Burton"
-        }
-
         with app.test_client() as c:
-            resp = c.post("/users/new", data)
+
+            data = {
+            "first_name": "Joel",
+            "last_name": "Burton",
+            "image_url": None
+            }
+
+            resp = c.post("/users/new", data=data, follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("Joel", html)
             self.assertIn("Burton",html)
-
-
-
+            self.assertIn("Users List", html)
 
 
     # def test_cancel_edit(self):
+
 
 
     # def test_edit_users(self):
