@@ -39,10 +39,13 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
+
+
         test_post = Post(
             title="test1_title",
             content="test1_content",
-            user_id=test_user.id
+            user_id=test_user.id,
+            created_at='2023-12-07 07:49:02.747421'
         )
 
         db.session.add(test_user)
@@ -54,6 +57,7 @@ class UserViewTestCase(TestCase):
         # rely on this user in our tests without needing to know the numeric
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
+        self.post_id = test_post.id
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -153,14 +157,18 @@ class UserViewTestCase(TestCase):
             # self.assertNotIn(test_user.last_name, html)
             self.assertIn("Users List", html)
 
+
+    """ TESTS FOR POSTS"""
+
     def test_list_post(self):
-        """Tests if manually added user found on user list homepage"""
+        """Tests posts show up on user detail page"""
         with app.test_client() as c:
-            resp = c.get("/users")
+            resp = c.get(f"/users/{self.user_id}")
             self.assertEqual(resp.status_code, 200)
+
             html = resp.get_data(as_text=True)
-            self.assertIn("test1_first", html)
-            self.assertIn("test1_last", html)
+
+            self.assertIn("test1_title", html)
 
     # def test_add_users(self):
     #     """Tests if form added user found on user list homepage"""
