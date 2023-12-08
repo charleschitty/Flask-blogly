@@ -20,11 +20,9 @@
     Edit
   </a>
 </button>
-<button>
-  <a href="/posts/{{ post.id }}/delete">
-    Delete
-  </a>
-</button>
+<form method="POST", action ="/posts/{{ post.id }}/delete">
+  <button> Delete </button>
+</form>
 
 {% endblock %}
 

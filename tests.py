@@ -5,7 +5,7 @@ os.environ["DATABASE_URL"] = "postgresql:///blogly_test"
 from unittest import TestCase
 
 from app import app, db
-from models import DEFAULT_IMAGE_URL, User
+from models import DEFAULT_IMAGE_URL, User, Post
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -31,6 +31,7 @@ class UserViewTestCase(TestCase):
         # all of their records before each test just as we're doing with the
         # User model below.
         User.query.delete()
+        Post.query.delete()
 
         test_user = User(
             first_name="test1_first",
@@ -38,7 +39,14 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
+        test_post = Post(
+            title="test1_title",
+            content="test1_content",
+            user_id=test_user.id
+        )
+
         db.session.add(test_user)
+        db.session.add(test_post)
         db.session.commit()
 
         # We can hold onto our test_user's id by attaching it to self (which is
@@ -144,3 +152,97 @@ class UserViewTestCase(TestCase):
             self.assertNotIn("test1_last",html)
             # self.assertNotIn(test_user.last_name, html)
             self.assertIn("Users List", html)
+
+    def test_list_post(self):
+        """Tests if manually added user found on user list homepage"""
+        with app.test_client() as c:
+            resp = c.get("/users")
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("test1_first", html)
+            self.assertIn("test1_last", html)
+
+    # def test_add_users(self):
+    #     """Tests if form added user found on user list homepage"""
+
+    #     with app.test_client() as c:
+
+    #         data = {
+    #             "first_name": "Joel",
+    #             "last_name": "Burton",
+    #             "image_url": None
+    #         }
+
+    #         # test full user and no image user
+
+    #         resp = c.post("/users/new", data=data, follow_redirects=True)
+    #         self.assertEqual(resp.status_code, 200)
+    #         html = resp.get_data(as_text=True)
+    #         self.assertIn("Joel", html)
+    #         self.assertIn("Burton",html)
+    #         self.assertIn("Users List", html)
+
+
+    # def test_load_user_detail_page(self):
+    #     """
+    #     Tests that the user detail page loads correctly
+    #     """
+
+    #     with app.test_client() as c:
+
+    #         # test_user = User.query.get(self.user_id)
+
+    #         resp = c.get(f"/users/{self.user_id}")
+    #         html = resp.get_data(as_text=True)
+    #         # self.assertIn(test_user.first_name, html)
+    #         self.assertIn("test1_first",html)
+    #         # self.assertIn(test_user.last_name, html)
+    #         self.assertIn("test1_last",html)
+    #         self.assertIn("User: test1_first test1_last", html)
+    #         # self.assertIn(f"User: {test_user.first_name} {test_user.last_name}",
+    #         #  html)
+
+    # def test_edit_users(self):
+    #     """Tests if form edited user found on user list homepage"""
+
+    #     with app.test_client() as c:
+
+    #         test_user = User.query.get(self.user_id)
+    #         test_user.last_name = "test_Burton"
+
+    #         #test a bunch of edits
+    #         data = {
+    #             "first_name" : test_user.first_name,
+    #             "last_name" : test_user.last_name,
+    #             "image_url" : test_user.image_url,
+    #         }
+
+    #         resp = c.post(f"/users/{self.user_id}/edit",
+    #                       data=data, follow_redirects=True)
+
+    #         self.assertEqual(resp.status_code, 200)
+    #         html = resp.get_data(as_text=True)
+    #         self.assertIn("test1_first", html)
+    #         # self.assertIn(test_user.first_name, html)
+    #         self.assertIn("test_Burton",html)
+    #         # self.assertIn(test_user.last_name, html)
+    #         self.assertIn("Users List", html)
+
+
+    # def test_delete_users(self):
+    #     """Tests if deleted user removed from user homepage"""
+
+    #     with app.test_client() as c:
+
+    #         # test_user = User.query.get(self.user_id)
+
+    #         resp = c.post(f"/users/{self.user_id}/delete",
+    #                        follow_redirects=True)
+
+    #         self.assertEqual(resp.status_code, 200)
+    #         html = resp.get_data(as_text=True)
+    #         self.assertNotIn("test1_first", html)
+    #         # self.assertNotIn(test_user.first_name, html)
+    #         self.assertNotIn("test1_last",html)
+    #         # self.assertNotIn(test_user.last_name, html)
+    #         self.assertIn("Users List", html)

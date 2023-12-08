@@ -37,13 +37,13 @@ def get_users():
 
     users = User.query.all() #ordering (further study) #by user-id probably
 
-    return render_template("/user_listing.html", users=users)
+    return render_template("/users/user_listing.html", users=users)
 
 @app.get("/users/new")
 def add_user():
     """Show an add form for users."""
 
-    return render_template('/add_user_form.html')
+    return render_template('/users/add_user_form.html')
 
 @app.post("/users/new")
 def handle_add_user_form():
@@ -72,8 +72,9 @@ def show_user_info(user_id):
     """
 
     user = User.query.get_or_404(user_id)
+    posts = Post.query.filter(Post.user_id == user_id)
 
-    return render_template("/user_detail.html", user=user)
+    return render_template("/users/user_detail.html", user=user, posts=posts)
 
 @app.get("/users/<int:user_id>/edit")
 def edit_user_info(user_id):
@@ -83,7 +84,7 @@ def edit_user_info(user_id):
     """
 
     user = User.query.get_or_404(user_id)
-    return render_template("/user_edit.html", user=user)
+    return render_template("/users/user_edit.html", user=user)
 
 
 @app.post("/users/<int:user_id>/edit")
@@ -129,7 +130,7 @@ def add_post(user_id):
     """
     user = User.query.get_or_404(user_id)
 
-    return render_template("add_post_form.html", user=user)
+    return render_template("/posts/add_post_form.html", user=user)
 
 @app.post('/users/<int:user_id>/posts/new')
 def handle_add_post(user_id):
@@ -163,45 +164,47 @@ def show_post(post_id):
     user_id = post.user_id
     user = User.query.get_or_404(user_id)
 
-    return render_template("/show_post.html", post=post, user=user)
+    return render_template("/posts/show_post.html", post=post, user=user)
+
 
 @app.get('/posts/<int:post_id>/edit')
 def show_edit_post(post_id):
     """Show form to edit a post, and to cancel (back to user page)."""
 
-    user = User.query.get_or_404(post_id)
-    return render_template("/user_edit.html", user=user)
+    post = Post.query.get_or_404(post_id)
+    user_id = post.user_id
+    user = User.query.get_or_404(user_id)
+
+    return render_template("/posts/edit_post.html", user=user, post=post)
 
 @app.post('/posts/<int:post_id>/edit')
 def handle_edit_post(post_id):
     """Handle editing of a post. Redirect back to the post view."""
 
-    user = User.query.get_or_404(user_id) #grabbing user object
+    post = Post.query.get_or_404(post_id)
 
-    user.first_name = request.form['first_name']
-    user.last_name = request.form['last_name']
+    post.title = request.form['title']
+    post.content = request.form['content']
 
-    user.image_url = request.form['image_url']
-
-    db.session.add(user)
+    db.session.add(post)
     db.session.commit()
 
     #Flashing - user was edited
 
-    return redirect("/users")
+    return redirect(f"/posts/{post_id}")
 
 
-@app.get('/posts/<int:post_id>/delete')
+@app.post('/posts/<int:post_id>/delete')
 def delete_post(post_id):
     """Delete the post."""
 
-    post = User.query.get_or_404(post_id)
+    post = Post.query.get_or_404(post_id)
 
     db.session.delete(post)
     db.session.commit()
 
     #flash user was deleted
 
-    return redirect("/users")
+    return redirect(f"/users/{post.user_id}")
 
 
