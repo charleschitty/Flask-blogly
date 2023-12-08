@@ -19,12 +19,6 @@ app.config['SECRET_KEY'] = "oh-so-secret"
 debug = DebugToolbarExtension(app)
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
-
-#FIXME: ???? We have non nullable fields but we are still submitting blank
-# form fields and its showing up as a blank (empty string?) in the DB
-# it's not unknown but still empty....?
-# DO required ? yes no
-
 @app.get("/")
 def index():
     """Redirects to list of users (homepage)."""
@@ -72,6 +66,7 @@ def show_user_info(user_id):
     """
 
     user = User.query.get_or_404(user_id)
+    #FIXME:
     posts = Post.query.filter(Post.user_id == user_id)
 
     return render_template("/users/user_detail.html", user=user, posts=posts)
@@ -160,7 +155,7 @@ def show_post(post_id):
     """
 
     #not sure how the join with post/user is referenced here
-    post = Post.query.get_or_404(post_id)
+    post = Post.query.get_or_404(post_id) #Post object
     user_id = post.user_id
     user = User.query.get_or_404(user_id)
 

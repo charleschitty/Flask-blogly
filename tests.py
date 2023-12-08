@@ -60,8 +60,6 @@ class UserViewTestCase(TestCase):
         self.user_id = test_user.id
         self.post_id = test_post.id
 
-       # breakpoint()
-
     def tearDown(self):
         """Clean up any fouled transaction."""
         db.session.rollback()
@@ -163,7 +161,7 @@ class UserViewTestCase(TestCase):
 
     """ TESTS FOR POSTS"""
 
-    def test_list_post(self):#FIXME: what
+    def test_list_post(self):
         """Tests posts show up on user detail page"""
         with app.test_client() as c:
             resp = c.get(f"/users/{self.user_id}")
@@ -173,87 +171,59 @@ class UserViewTestCase(TestCase):
 
             self.assertIn("test1_title", html)
 
-    # def test_add_users(self):
-    #     """Tests if form added user found on user list homepage"""
+    def test_add_posts(self):
+        """Tests if form added posts found on user detail page"""
 
-    #     with app.test_client() as c:
+        with app.test_client() as c:
 
-    #         data = {
-    #             "first_name": "Joel",
-    #             "last_name": "Burton",
-    #             "image_url": None
-    #         }
+            data = {
+                "title": "Shifty Sfive",
+                "content": "fakecontent"
+            }
 
-    #         # test full user and no image user
+            resp = c.post(f"/users/{self.user_id}/posts/new",
+                            data=data,
+                            follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("Shifty Sfive", html)
+            self.assertIn("User: test1_first test1_last", html)
 
-    #         resp = c.post("/users/new", data=data, follow_redirects=True)
-    #         self.assertEqual(resp.status_code, 200)
-    #         html = resp.get_data(as_text=True)
-    #         self.assertIn("Joel", html)
-    #         self.assertIn("Burton",html)
-    #         self.assertIn("Users List", html)
+    def test_edit_posts(self):
+        """Tests if form edited posts are updated on users posts"""
 
+        with app.test_client() as c:
 
-    # def test_load_user_detail_page(self):
-    #     """
-    #     Tests that the user detail page loads correctly
-    #     """
+            test_post = Post.query.get(self.post_id)
+            test_post.title = "editedTitle"
+            test_post.content = "editedContent"
 
-    #     with app.test_client() as c:
+            data = {
+                "title" : test_post.title,
+                "content" : test_post.content
+            }
 
-    #         # test_user = User.query.get(self.user_id)
+            resp = c.post(f"/posts/{self.post_id}/edit",
+                          data=data, follow_redirects=True)
 
-    #         resp = c.get(f"/users/{self.user_id}")
-    #         html = resp.get_data(as_text=True)
-    #         # self.assertIn(test_user.first_name, html)
-    #         self.assertIn("test1_first",html)
-    #         # self.assertIn(test_user.last_name, html)
-    #         self.assertIn("test1_last",html)
-    #         self.assertIn("User: test1_first test1_last", html)
-    #         # self.assertIn(f"User: {test_user.first_name} {test_user.last_name}",
-    #         #  html)
-
-    # def test_edit_users(self):
-    #     """Tests if form edited user found on user list homepage"""
-
-    #     with app.test_client() as c:
-
-    #         test_user = User.query.get(self.user_id)
-    #         test_user.last_name = "test_Burton"
-
-    #         #test a bunch of edits
-    #         data = {
-    #             "first_name" : test_user.first_name,
-    #             "last_name" : test_user.last_name,
-    #             "image_url" : test_user.image_url,
-    #         }
-
-    #         resp = c.post(f"/users/{self.user_id}/edit",
-    #                       data=data, follow_redirects=True)
-
-    #         self.assertEqual(resp.status_code, 200)
-    #         html = resp.get_data(as_text=True)
-    #         self.assertIn("test1_first", html)
-    #         # self.assertIn(test_user.first_name, html)
-    #         self.assertIn("test_Burton",html)
-    #         # self.assertIn(test_user.last_name, html)
-    #         self.assertIn("Users List", html)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertIn("editedTitle", html)
+            self.assertIn("editedContent",html)
+            self.assertNotIn("test1_title",html)
 
 
-    # def test_delete_users(self):
-    #     """Tests if deleted user removed from user homepage"""
+    def test_delete_posts(self):
+        """Tests if deleted posts removed from users posts"""
 
-    #     with app.test_client() as c:
+        with app.test_client() as c:
 
-    #         # test_user = User.query.get(self.user_id)
+            resp = c.post(f"/posts/{self.post_id}/delete",
+                           follow_redirects=True)
 
-    #         resp = c.post(f"/users/{self.user_id}/delete",
-    #                        follow_redirects=True)
-
-    #         self.assertEqual(resp.status_code, 200)
-    #         html = resp.get_data(as_text=True)
-    #         self.assertNotIn("test1_first", html)
-    #         # self.assertNotIn(test_user.first_name, html)
-    #         self.assertNotIn("test1_last",html)
-    #         # self.assertNotIn(test_user.last_name, html)
-    #         self.assertIn("Users List", html)
+            self.assertEqual(resp.status_code, 200)
+            html = resp.get_data(as_text=True)
+            self.assertNotIn("editedTitle", html)
+            self.assertNotIn("test1_title", html)
+            self.assertNotIn("test1_content",html)
+            self.assertIn("User: test1_first", html)
