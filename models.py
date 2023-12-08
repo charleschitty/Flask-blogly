@@ -52,7 +52,8 @@ class User(db.Model):
 
 
 class Post(db.Model):
-    """Fields:
+    """
+    Fields:
         id int PK
         title str
         content str
@@ -76,8 +77,12 @@ class Post(db.Model):
         nullable = False)
 
     created_at = db.Column(
-        db.DateTime
+        db.DateTime,
+        nullable=False
     )
+    #Do we need Nullable on user_id (both arguments)
+    #preserve post history but remove user (reddit by <deleted>)
+    #or data/privacy reasons: delete whole-sale when user requests data deletion
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id')

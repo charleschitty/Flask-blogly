@@ -21,6 +21,7 @@ db.drop_all()
 db.create_all()
 
 
+#FIXME: Create class  for posts
 class UserViewTestCase(TestCase):
     """Test views for users."""
 
@@ -159,10 +160,11 @@ class UserViewTestCase(TestCase):
             self.assertIn("Users List", html)
 
 
-    """ TESTS FOR POSTS"""
+    """************* TESTS FOR POSTS *******************"""
 
     def test_list_post(self):
         """Tests posts show up on user detail page"""
+
         with app.test_client() as c:
             resp = c.get(f"/users/{self.user_id}")
             self.assertEqual(resp.status_code, 200)
@@ -194,13 +196,13 @@ class UserViewTestCase(TestCase):
 
         with app.test_client() as c:
 
-            test_post = Post.query.get(self.post_id)
-            test_post.title = "editedTitle"
-            test_post.content = "editedContent"
+            # test_post = Post.query.get(self.post_id)
+            # test_post.title = "editedTitle"
+            # test_post.content = "editedContent"
 
             data = {
-                "title" : test_post.title,
-                "content" : test_post.content
+                "title" : "editedTitle",
+                "content" : "editedContent"
             }
 
             resp = c.post(f"/posts/{self.post_id}/edit",

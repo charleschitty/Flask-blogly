@@ -67,9 +67,11 @@ def show_user_info(user_id):
 
     user = User.query.get_or_404(user_id)
     #FIXME:
-    posts = Post.query.filter(Post.user_id == user_id)
+    #user.posts (easy solution)
+    # posts = Post.query.filter(Post.user_id == user_id)
 
-    return render_template("/users/user_detail.html", user=user, posts=posts)
+    return render_template("/users/user_detail.html", user=user,
+                            posts=user.posts)
 
 @app.get("/users/<int:user_id>/edit")
 def edit_user_info(user_id):
@@ -109,7 +111,10 @@ def handle_edit_user_delete_form(user_id):
     """Delete the user,, returning the user to the /users page."""
 
     user = User.query.get_or_404(user_id)
+    posts = user.posts
 
+    #FIXME:delete  posts then the user - need a for loop to delete theses posts
+    # db.session.delete(posts)
     db.session.delete(user)
     db.session.commit()
 
@@ -117,7 +122,10 @@ def handle_edit_user_delete_form(user_id):
 
     return redirect("/users")
 
-"""Post routes: Users can add and edit posts on the blog"""
+
+
+"""**********Post routes: Users can add and edit posts on the blog***********"""
+
 
 @app.get('/users/<int:user_id>/posts/new')
 def add_post(user_id):
@@ -138,7 +146,7 @@ def handle_add_post(user_id):
 
     new_post = Post(title=title,
                 content=content,
-                created_at=datetime.now(),
+                created_at=datetime.now(), #default on model
                 user_id=user.id)
 
     db.session.add(new_post)
@@ -167,8 +175,9 @@ def show_edit_post(post_id):
     """Show form to edit a post, and to cancel (back to user page)."""
 
     post = Post.query.get_or_404(post_id)
-    user_id = post.user_id
-    user = User.query.get_or_404(user_id)
+    # user_id = post.user_id
+    # user = User.query.get_or_404(user_id)
+    user = post.user
 
     return render_template("/posts/edit_post.html", user=user, post=post)
 
@@ -203,3 +212,12 @@ def delete_post(post_id):
     return redirect(f"/users/{post.user_id}")
 
 
+
+
+#Notes:
+# Bugs:
+# 1) tests case - deleting post before user
+# 2) deleting user before deleting post works, but posts table still populated in psql blogly
+# -Why?
+# -setting values to null potentially?
+# - we doing reddit (by <deleted> )
